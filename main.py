@@ -5,6 +5,9 @@ from tkhtmlview import HTMLLabel
 from tkinter import messagebox as mbox
 from md2pdf.core import md2pdf
 
+header = open("template/header.html").read()
+footer = open("template/footer.html").read()
+style = "template/style.css"
 class Window(Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
@@ -60,11 +63,11 @@ class Window(Frame):
                 mbox.showerror("Error Saving File" , "Oops!, The File : {} can not be saved!".format(savefilename))
 
     def exportfile(self):
-        filedata = self.inputeditor.get("1.0" , END)
+        filedata = header + self.inputeditor.get("1.0" , END) + footer
         exportfilename = filedialog.asksaveasfilename(filetypes = (("PDF file", "*.pdf"),), defaultextension='.pdf' , title="Export PDF file")
         if exportfilename:
             try:
-                md2pdf(exportfilename, md_content=filedata)
+                md2pdf(exportfilename, md_content=filedata, css_file_path=style)
             except:
                 mbox.showerror("Error Saving File" , "Oops!, The File : {} can not be saved!".format(exportfilename))
 
