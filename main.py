@@ -8,6 +8,8 @@ from md2pdf.core import md2pdf
 header = open("template/header.html").read()
 footer = open("template/footer.html").read()
 style = "template/style.css"
+
+lastfilename = ""
 class Window(Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
@@ -29,14 +31,18 @@ class Window(Frame):
         self.inputeditor.bind("<<Modified>>", self.onInputChange)
 
         self.mainmenu = Menu(self)
-        self.filemenu = Menu(self.mainmenu)
+        self.filemenu = Menu(self.mainmenu, tearoff=False)
         self.filemenu.add_command(label="Open", command=self.openfile)
+        self.filemenu.add_command(label="Save", command=self.quicksave, accelerator="Ctrl+S")
         self.filemenu.add_command(label="Save as", command=self.savefile)
         self.filemenu.add_command(label="Export to PDF", command=self.exportfile)
         self.filemenu.add_separator()
-        self.filemenu.add_command(label="Exit", command=self.quit)
+        self.filemenu.add_command(label="Exit", command=self.quit, accelerator="Ctrl+Q")
         self.mainmenu.add_cascade(label="File", menu=self.filemenu)
         self.master.config(menu=self.mainmenu)
+
+        self.bind_all("<Control-q>", lambda event: self.quit())
+        self.bind_all("<Control-s>", lambda event: self.quicksave())
 
     def onInputChange(self , event):
         self.inputeditor.edit_modified(0)
@@ -53,8 +59,28 @@ class Window(Frame):
                 mbox.showerror("Error Opening Selected File" , "Oops!, The file you selected : {} can not be opened!".format(openfilename))
 
     def savefile(self):
+        global lastfilename
+
         filedata = self.inputeditor.get("1.0" , END)
         savefilename = filedialog.asksaveasfilename(filetypes = (("Markdown File", "*.md"), ("Text File", "*.txt")) , title="Save Markdown File")
+        lastfilename = savefilename
+        if savefilename:
+            try:
+                f = open(savefilename , "w")
+                f.write(filedata)
+            except:
+                mbox.showerror("Error Saving File" , "Oops!, The File : {} can not be saved!".format(savefilename))
+
+    def quicksave(self):
+        global lastfilename
+
+        filedata = self.inputeditor.get("1.0" , END)
+        savefilename = lastfilename
+
+        if savefilename == "":
+            self.savefile()
+            return
+
         if savefilename:
             try:
                 f = open(savefilename , "w")
