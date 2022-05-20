@@ -20,7 +20,7 @@ class Window(Frame):
         self.pack(fill=BOTH, expand=1)
 
         self.inputeditor = Text(self, width="1", font=self.myfont)
-        self.inputeditor.pack(fill=BOTH, expand=1, side=LEFT)
+        self.inputeditor.pack(fill=BOTH, expand=1, side=LEFT, padx=20, pady=20)
 
         self.outputbox = HTMLLabel(self, width="1", background="white", html="<h1>Welcome</h1>")
         self.outputbox.pack(fill=BOTH, expand=1, side=RIGHT)
@@ -72,6 +72,6 @@ class Window(Frame):
                 mbox.showerror("Error Saving File" , "Oops!, The File : {} can not be saved!".format(exportfilename))
 
 root = Tk()
-root.geometry("700x600")
+root.geometry("960x720")
 app = Window(root)
 app.mainloop()
