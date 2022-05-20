@@ -11,3 +11,6 @@ Install dependencies:
 
 If on MacOS:  
 `brew install cairo pango gdk-pixbuf libxml2 libxslt libffi`
+
+Run:  
+`python3 main.py`
